@@ -1,12 +1,16 @@
 import re
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse, urljoin, urldefrag
+from urllib.parse import urlparse, urljoin, urldefrag, urlunparse
 
 visited = set()
 
 def scraper(url, resp):
-    links = extract_next_links(url, resp)
-    return [link for link in links if is_valid(link)]
+    try:
+        links = extract_next_links(url, resp)
+        return [link for link in links if is_valid(link)]
+    except Exception as e:
+        print(e)
+        return []
 
 def extract_next_links(url, resp):
     '''
@@ -21,45 +25,39 @@ def extract_next_links(url, resp):
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
     return list()
     '''
+    global visited
+
+    if resp.status != 200: #if error
+        print('ERROR:', resp.status)
+        return []
+
+    # Get html content, defragment, get absolute path, and add it linksList if they are valid
     links = []
     soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
     for anchor in soup.find_all('a', href=True):
-        href = anchor['href']
-        href, _ = urldefrag(href)
-        href = urljoin(resp.url, href)
-        if is_valid(href):
+        href = anchor['href'] # get url
+        href, _ = urldefrag(href) # deframentation
+        href = urljoin(resp.url, href) # getting absolute path
+        if is_valid(href) and href != url and href != resp.url: # If valid or not in page
             links.append(href)
 
-    global visited
-    for link in links[:]:
-        if (link in visited or link == url or link == resp.url):
-            links.remove(link)
+    # Filter query params from links
+    goodLinks = []
     for link in links:
-        visited.add(link)
+        tempLink = shorten_url(link)
+        if tempLink not in visited:
+            visited.add(tempLink)
+            goodLinks.append(link)
     
-    return links
+    return goodLinks
+
+
+def shorten_url(url): # REMOVE QUESTION MARK
+    parsed_url = urlparse(url)
+    url_without_query = urlunparse(parsed_url._replace(query="", fragment="")) 
+    return url_without_query
 
 def is_valid(url):
-    # Decide whether to crawl this url or not. 
-    # If you decide to crawl it, return True; otherwise return False.
-    # There are already some conditions that return False. Example Format:
-    #try:
-    #    parsed = urlparse(url)
-    #    if parsed.scheme not in set(["http", "https"]):
-    #        return False
-    #    return not re.match(
-    #        r".*\.(css|js|bmp|gif|jpe?g|ico"
-    #        + r"|png|tiff?|mid|mp2|mp3|mp4"
-    #        + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
-    #        + r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names"
-    #        + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
-    #        + r"|epub|dll|cnf|tgz|sha1"
-    #        + r"|thmx|mso|arff|rtf|jar|csv"
-    #        + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
-    #
-    #except TypeError:
-    #    print ("TypeError for ", parsed)
-    #    raise
     try:
         parsed = urlparse(url)
         if parsed.scheme not in set(["http", "https"]):
