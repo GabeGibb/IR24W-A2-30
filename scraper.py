@@ -9,6 +9,7 @@ unique_pages = 0
 longest_page_url = ''
 longest_page_length = 0
 
+stopWords = ["a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are", "aren", "t", "as", "at", "be", "because", "been", "before", "being", "below", "between", "both", "but", "by", "can", "cannot", "could", "couldn", "did", "didn", "do", "does", "doesn", "doing", "don", "down", "during", "each", "few", "for", "from", "further", "had", "hadn", "has", "hasn", "have", "haven", "having", "he", "d", "ll", "s", "her", "here", "hers", "herself", "him", "himself", "his", "how", "i", "m", "ve", "if", "in", "into", "is", "isn", "it", "its", "itself", "let", "me", "more", "most", "mustn", "my", "myself", "no", "nor", "not", "of", "off", "on", "once", "only", "or", "other", "ought", "our", "ours", "ourselves", "out", "over", "own", "same", "shan", "she", "should", "shouldn", "so", "some", "such", "than", "that", "the", "their", "theirs", "them", "themselves", "then", "there", "these", "they", "re", "ve", "this", "those", "through", "to", "too", "under", "until", "up", "very", "was", "wasn", "we", "were", "weren", "what", "when", "where", "which", "while", "who", "whom", "why", "with", "won", "would", "wouldn", "you", "your", "yours", "yourself", "yourselves"]
 subdomains = {}
 
 def scraper(url, resp):
@@ -67,11 +68,23 @@ def extract_next_links(url, resp):
 
     # KELLY TASKS!!!!!!!!!!
     # TODO: Get page length (in length of words) and compare to longest page, if longer, update longest page count and url (BEATUFIUL SOUP)
-
+    if len(resp.raw_response.content) > longest_page_length:
+        longest_page_length = len(resp.raw_response.content)
+        longest_page_url = resp.url
     # TODO: Store common words using some sort of dict object (increment count if word is already in dict or set to 1 if new)
-    # NOTE: Storing a dict of every word we see is bad, only store words that are common and ENGLISH
-    # EPIC LOL DID THIS IMPLEMENT HERE
+    common_words = {}
+    if resp.raw_response.content: #if content exists:
+        soup = BeautifulSoup(resp.raw_response.content, 'html.parser') #parsed HTML content
+        for script in soup(["script", "style"]): #removes script and style tags from html doc
+            script.extract()
+        text = soup.get_text()
+        words = text.split()
 
+
+        for word in words:
+            if word.isalpha() and word.lower() not in stopWords: #if word is not a stop word and is an english word
+                common_words[word] = common_words.get(word, 0) + 1 #increment count if word is already in dict or set to 1 if new
+        
     # TODO: Keep track of subdomains in  ics.uci.edu. 
     # NOTE: Again use a dict object to store subdomains and increment count if subdomain is already in dict or set to 1 if new (store all of them)
 
