@@ -87,6 +87,8 @@ def extract_next_links(url, resp):
         
     # TODO: Keep track of subdomains in  ics.uci.edu. 
     # NOTE: Again use a dict object to store subdomains and increment count if subdomain is already in dict or set to 1 if new (store all of them)
+    
+    
 
     return goodLinks
 
