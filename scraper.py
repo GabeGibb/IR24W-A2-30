@@ -47,7 +47,7 @@ def extract_next_links(url, resp):
     
     # TODO: Tokenize url by / and if there are duplicates in url, url is bad return []
     # EXAMPLE: https://www.ics.uci.edu/alumni/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/index.php
-    # 
+    # http://www.cert.ics.uci.edu/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/asdf
 
     # TODO: Use some sort of hashing of html to get similarity score of pages, if score is too high, return []
 
