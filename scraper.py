@@ -33,10 +33,6 @@ def extract_next_links(url, resp):
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
     return list()
     '''
-    # GLOBALS
-    # global visited
-    global unique_pages
-
     # Handles bad status codes and returns TRUE if not 200
     # Does nothing if 200
     if status_code_bad(resp, url):
@@ -57,6 +53,7 @@ def extract_next_links(url, resp):
 
     # Add url without query params to visited
     # Goodlinks check against visited but return full url with query params
+    global unique_pages
     goodLinks = filter_query_params(links)
 
     # We've gotten this far so we can increment our unique pages (might not need this if we have a set of visited urls)
@@ -71,6 +68,7 @@ def extract_next_links(url, resp):
     return goodLinks
 
 def status_code_bad(resp, url):
+    global visited
     # Do stuff if not 200 status code
     if resp.status != 200: 
         # TODO: Index page from redirected crawler
