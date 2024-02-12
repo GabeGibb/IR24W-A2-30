@@ -34,43 +34,73 @@ def extract_next_links(url, resp):
     return list()
     '''
     # GLOBALS
-    global visited
+    # global visited
     global unique_pages
 
-    global subdomains
-
-    # TODO: We may not want to do this (need to remove colon/fragmentation)
-    # THIS ALSO WILL NOT TRACK REDIRECTS NEED TO CHANGE
-    if resp.status != 200: #if error
-        print('ERROR:', resp.status)
-        visited.add(url_without_query(url))
+    # Handles bad status codes and returns TRUE if not 200
+    # Does nothing if 200
+    if status_code_bad(resp, url):
         return []
     
-    # TODO: Tokenize url by / and if there are duplicates in url, url is bad return []
-    # EXAMPLE: https://www.ics.uci.edu/alumni/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/index.php
-    # http://www.cert.ics.uci.edu/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/asdf
+    # Tokenize url by / and if anything repeats more than twice, return []
+    # We don't need to add to visited
+    # http://www.cert.ics.uci.edu/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/
+    if is_long_url(url):
+        return []
 
     # TODO: Use some sort of hashing of html to get similarity score of pages, if score is too high, return []
+    if too_similar(resp):
+        return []
 
-    # Get html content, defragment, get absolute path, and add it links List if they are valid
-    links = get_links(url, resp)
-    # WE NOW HAVE VALID / DEFRAGMENTED LINKS
+    # Get valid / defragmented links
+    links = get_links(resp, url)
 
-    # Filter query params to add to visited, and return links that when shortened are not in visited
+    # Add url without query params to visited
+    # Goodlinks check against visited but return full url with query params
     goodLinks = filter_query_params(links)
-    # WE NOW HAVE ADDED LINKS WITHOUT FRAGMENTS/QUERY PARAMS TO VISITED AND RETURNED UNIQUE LINKS
 
-    # PAGE GOOD, add to pages
+    # We've gotten this far so we can increment our unique pages (might not need this if we have a set of visited urls)
     unique_pages += 1
 
-    # Store common words using some sort of dict object (increment count if word is already in dict or set to 1 if new)
-    # Get page length (in length of words) and compare to longest page, if longer, update longest page count and url (BEATUFIUL SOUP)
+    # Keeps track of longest page and common words
     handle_word_stuff(resp)
         
-    # TODO: Keep track of subdomains in  ics.uci.edu. 
-    # NOTE: Again use a dict object to store subdomains and increment count if subdomain is already in dict or set to 1 if new (store all of them)
-    
+    # Keeps track of subdomains in ics.uci.edu. 
+    subdomains_tracker(resp)
+
     return goodLinks
+
+def status_code_bad(resp, url):
+    # Do stuff if not 200 status code
+    if resp.status != 200: 
+        # TODO: Index page from redirected crawler
+        if resp.status >= 300 and resp.status < 400:
+            # HANDLE REDIRECTS
+            return True
+        
+        # 404 error handling
+        # TODO: Maybe there is more we can do here?
+        print('ERROR:', resp.status)
+        visited.add(url_without_query(url)) # This also defragments the url
+        return True
+    return False
+
+
+def is_long_url(url):
+    url_tokens = url.split('/')
+    token_freq = {}
+    for token in url_tokens:
+        token_freq[token] = token_freq.get(token, 0) + 1
+        if token_freq[token] > 2:
+            return True
+    return False
+
+
+def too_similar(resp):
+    # TODO: Check page similarity via HTML hashing or something
+    pass
+    
+
 
 
 def url_without_query(url): # REMOVE QUERY PARAMETERS
@@ -79,7 +109,7 @@ def url_without_query(url): # REMOVE QUERY PARAMETERS
     return url_without_query
 
 
-def get_links(url, resp):
+def get_links(resp, url):
     links = []
     soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
     for anchor in soup.find_all('a', href=True):
@@ -101,6 +131,7 @@ def filter_query_params(links):
             goodLinks.append(link)
 
     return goodLinks
+
 
 def handle_word_stuff(resp):
     global longest_page_url
@@ -126,6 +157,15 @@ def handle_word_stuff(resp):
             longest_page_length = len(words)
             longest_page_url = resp.url
 
+
+def subdomains_tracker(resp):
+    global subdomains
+
+    domain = "ics.uci.edu"
+    parsed_url = urlparse(resp.url)
+    if parsed_url.hostname.endswith(domain):
+        subdomain = parsed_url.hostname[:-len(domain)-1]
+        subdomains[subdomain] = subdomains.get(subdomain, 0) + 1
 
 
 def is_valid(url):
