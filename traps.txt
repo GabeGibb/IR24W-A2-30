@@ -1,26 +1,19 @@
-# Problem
-# State (solved / not solved)
-# Fix?
-
 # Url /endings
-# Not solved
-# ?
+# SOLVED ish, Prob wil be solved by looking at page content
 https://www.cs.uci.edu/news/page/42
 https://www.cs.uci.edu/news/page/32
 https://www.cs.uci.edu/news/page/38
 
 #Trap caused by different query parameter
-#SOLVED ish
-#keep track of first part of url, seperate by ?, :
+#SOLVED comparing urls without query params should solved
 https://swiki.ics.uci.edu/doku.php/virtual_environments:virtualbox?tab_files=search&do=media&ns=wiki
 https://swiki.ics.uci.edu/doku.php/virtual_environments:virtualbox?ns=virtual_environments%3Aservices&tab_files=files&do=media
 https://swiki.ics.uci.edu/doku.php/virtual_environments:virtualbox?ns=virtual_environments%3Ajupyterhub&tab_files=files&do=media
 
 # Long links 
-# Not SOLVED
-# Dont go to long urls, compare similar urls ?
+# SOLVED tokenizing the url and making repeated words be eliminated will fix
 https://www.ics.uci.edu/alumni/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/index.php
-https://www.ics.uci.edu/alumni/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/index.php
+http://www.cert.ics.uci.edu/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/index.html
 
 # Crawler is accessing multiple sites with 404 error
 # Not solved
@@ -28,8 +21,3 @@ https://www.ics.uci.edu/alumni/stayconnected/stayconnected/stayconnected/staycon
 https://www.ics.uci.edu/sao/Course_updates.php, status <404>
 https://www.ics.uci.edu/policies/Laptop_ComputerUse.php, status <404>
 https://www.ics.uci.edu/policies/Academic_Honesty.php status <404>
-
-#Links links
-#Not solved
-http://www.cert.ics.uci.edu/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/asdf
-http://www.cert.ics.uci.edu/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/index.html
