@@ -3,6 +3,12 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin, urldefrag, urlunparse
 
 visited = set()
+unique_pages = 0
+
+longest_page_url = ''
+longest_page_length = 0
+
+subdomains = {}
 
 def scraper(url, resp):
     try:
@@ -25,13 +31,55 @@ def extract_next_links(url, resp):
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
     return list()
     '''
+    # GLOBALS
     global visited
+    global unique_pages
+
+    global longest_page_url
+    global longest_page_length 
+
+    global subdomains
 
     if resp.status != 200: #if error
         print('ERROR:', resp.status)
+        visited.add(url_without_query(url))
         return []
+    
+    # TODO: Tokenize url by / and if there are duplicates in url, url is bad return []
+    # EXAMPLE: https://www.ics.uci.edu/alumni/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/stayconnected/index.php
+    # 
 
-    # Get html content, defragment, get absolute path, and add it linksList if they are valid
+    # TODO: Use some sort of hashing of html to get similarity score of pages, if score is too high, return []
+
+    # Get html content, defragment, get absolute path, and add it links List if they are valid
+    links = get_links(url, resp)
+    # WE NOW HAVE VALID / DEFRAGMENTED LINKS
+
+    # Filter query params to add to visited, and return links that when shortened are not in visited
+    goodLinks = filter_query_params(links)
+    # WE NOW HAVE ADDED LINKS WITHOUT FRAGMENTS/QUERY PARAMS TO VISITED AND RETURNED UNIQUE LINKS
+
+    # PAGE GOOD, add to pages
+    unique_pages += 1
+
+    # TODO: Get page length and compare to longest page, if longer, update longest page count and url
+
+    # TODO: Store common words using some sort of dict object (increment count if word is already in dict or set to 1 if new)
+    # NOTE: Storing a dict of every word we see is bad, only store words that are common and ENGLISH
+
+    # TODO: Keep track of subdomains in  ics.uci.edu. 
+    # NOTE: Again use a dict object to store subdomains and increment count if subdomain is already in dict or set to 1 if new (store all of them)
+
+    return goodLinks
+
+
+def url_without_query(url): # REMOVE QUERY PARAMETERS
+    parsed_url = urlparse(url)
+    url_without_query = urlunparse(parsed_url._replace(query="", fragment="")) 
+    return url_without_query
+
+
+def get_links(url, resp):
     links = []
     soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
     for anchor in soup.find_all('a', href=True):
@@ -41,22 +89,17 @@ def extract_next_links(url, resp):
         if is_valid(href) and href != url and href != resp.url: # If valid or not in page
             links.append(href)
 
-    # Filter query params from links
+
+def filter_query_params(links):
+    global visited
     goodLinks = []
     for link in links:
-        tempLink = shorten_url(link)
+        tempLink = url_without_query(link)
         if tempLink not in visited:
             visited.add(tempLink)
             goodLinks.append(link)
-    
+
     return goodLinks
-
-
-def shorten_url(url): # REMOVE QUESTION MARK
-    parsed_url = urlparse(url)
-    url_without_query = urlunparse(parsed_url._replace(query="", fragment="")) 
-    return url_without_query
-
 def is_valid(url):
     try:
         parsed = urlparse(url)
