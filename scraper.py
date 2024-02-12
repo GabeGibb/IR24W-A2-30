@@ -2,6 +2,7 @@ import re
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin, urldefrag, urlunparse
 
+#GLOBALS
 visited = set()
 unique_pages = 0
 
@@ -40,6 +41,8 @@ def extract_next_links(url, resp):
 
     global subdomains
 
+    # TODO: We may not want to do this (need to remove colon/fragmentation)
+    # THIS ALSO WILL NOT TRACK REDIRECTS NEED TO CHANGE
     if resp.status != 200: #if error
         print('ERROR:', resp.status)
         visited.add(url_without_query(url))
@@ -62,10 +65,12 @@ def extract_next_links(url, resp):
     # PAGE GOOD, add to pages
     unique_pages += 1
 
-    # TODO: Get page length and compare to longest page, if longer, update longest page count and url
+    # KELLY TASKS!!!!!!!!!!
+    # TODO: Get page length (in length of words) and compare to longest page, if longer, update longest page count and url (BEATUFIUL SOUP)
 
     # TODO: Store common words using some sort of dict object (increment count if word is already in dict or set to 1 if new)
     # NOTE: Storing a dict of every word we see is bad, only store words that are common and ENGLISH
+    # EPIC LOL DID THIS IMPLEMENT HERE
 
     # TODO: Keep track of subdomains in  ics.uci.edu. 
     # NOTE: Again use a dict object to store subdomains and increment count if subdomain is already in dict or set to 1 if new (store all of them)
