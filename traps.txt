@@ -1,5 +1,5 @@
 # Url /endings
-# SOLVED ish, Prob wil be solved by looking at page content
+# NOT SOLVED NEEDS TO BE SOLVED BY COPMPARING PAGE CONTENT
 https://www.cs.uci.edu/news/page/42
 https://www.cs.uci.edu/news/page/32
 https://www.cs.uci.edu/news/page/38
@@ -16,7 +16,7 @@ https://www.ics.uci.edu/alumni/stayconnected/stayconnected/stayconnected/staycon
 http://www.cert.ics.uci.edu/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/index.html
 
 # Crawler is accessing multiple sites with 404 error
-# Not solved
+# Not solved (might not be a big deal)
 # ?
 https://www.ics.uci.edu/sao/Course_updates.php, status <404>
 https://www.ics.uci.edu/policies/Laptop_ComputerUse.php, status <404>

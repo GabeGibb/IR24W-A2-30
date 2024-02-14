@@ -42,8 +42,7 @@ def extract_next_links(url, resp):
         return []
     
     # Tokenize url by / and if anything repeats more than twice, return []
-    # We don't need to add to visited
-    # http://www.cert.ics.uci.edu/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/
+    # We don't need to add to visited # http://www.cert.ics.uci.edu/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/
     if is_long_url(url):
         return []
 
@@ -61,10 +60,9 @@ def extract_next_links(url, resp):
     # Goodlinks check against visited but return full url with query params
     goodLinks = filter_query_params(links)
 
-
     # STATS ==============================================================
 
-    # We've gotten this far so we can increment our unique pages (might not need this if we have a set of visited urls)
+    # We've gotten this far so we can increment our unique pages
     global unique_pages
     unique_pages += 1
 
@@ -74,22 +72,26 @@ def extract_next_links(url, resp):
     # Keeps track of subdomains in ics.uci.edu. 
     subdomains_tracker(resp)
 
+    # DEBUG ==============================================================
+
+    debug()
+
     return goodLinks
 
 def status_code_bad(resp, url):
     global visited
     # Do stuff if not 200 status code
     if resp.status != 200: 
-        # TODO: Index page from redirected crawler
+        # TODO: Detect redirects and if the page redirects your crawler, index the redirected content 
+        # WHAT DOES THAT MEAN??
         if resp.status >= 300 and resp.status < 400:
-            # HANDLE REDIRECTS
-            return True
+            # Assuming just act like normal
+            return False
         
         # 404 error handling
-        # TODO: Maybe there is more we can do here?
-        print('ERROR:', resp.status)
         visited.add(url_without_query(url)) # This also defragments the url
         return True
+    #Status code good
     return False
 
 
@@ -99,6 +101,7 @@ def is_long_url(url):
     for token in url_tokens:
         token_freq[token] = token_freq.get(token, 0) + 1
         if token_freq[token] > 2:
+            # print('REMOVED LONG:', url)
             return True
     return False
 
@@ -106,7 +109,6 @@ def is_long_url(url):
 def too_similar(resp):
     # TODO: Check page similarity via HTML hashing or something
     pass
-    
 
 
 
@@ -125,6 +127,8 @@ def get_links(resp, url):
         href = urljoin(resp.url, href) # getting absolute path
         if is_valid(href) and href != url and href != resp.url: # If valid or not in page
             links.append(href)
+
+    return links
 
 
 def filter_query_params(links):
@@ -145,14 +149,13 @@ def handle_word_stuff(resp):
     global longest_page_length 
     global common_words
 
-    # TODO: utf-8 encoding?
     stopWords = ["a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are", "aren", "t", "as", "at", "be", "because", "been", "before", "being", "below", "between", "both", "but", "by", "can", "cannot", "could", "couldn", "did", "didn", "do", "does", "doesn", "doing", "don", "down", "during", "each", "few", "for", "from", "further", "had", "hadn", "has", "hasn", "have", "haven", "having", "he", "d", "ll", "s", "her", "here", "hers", "herself", "him", "himself", "his", "how", "i", "m", "ve", "if", "in", "into", "is", "isn", "it", "its", "itself", "let", "me", "more", "most", "mustn", "my", "myself", "no", "nor", "not", "of", "off", "on", "once", "only", "or", "other", "ought", "our", "ours", "ourselves", "out", "over", "own", "same", "shan", "she", "should", "shouldn", "so", "some", "such", "than", "that", "the", "their", "theirs", "them", "themselves", "then", "there", "these", "they", "re", "ve", "this", "those", "through", "to", "too", "under", "until", "up", "very", "was", "wasn", "we", "were", "weren", "what", "when", "where", "which", "while", "who", "whom", "why", "with", "won", "would", "wouldn", "you", "your", "yours", "yourself", "yourselves"]
     if resp.raw_response.content: #if content exists:
         soup = BeautifulSoup(resp.raw_response.content, 'html.parser') #parsed HTML content
         for script in soup(["script", "style"]): #removes script and style tags from html doc
             script.extract()
         text = soup.get_text()
-        # TODO: isalpha?
+        # TODO: isalpha removing words like "don't"
         words = [word.lower() for word in text.split() if word.isalpha()]
 
         for word in words:
@@ -168,7 +171,8 @@ def handle_word_stuff(resp):
 def subdomains_tracker(resp):
     global subdomains
 
-    domain = "ics.uci.edu"
+    # only track ics.uci.edu
+    domain = ".ics.uci.edu"
     parsed_url = urlparse(resp.url)
     if parsed_url.hostname.endswith(domain):
         subdomain = parsed_url.hostname[:-len(domain)-1]
@@ -195,3 +199,28 @@ def is_valid(url):
     except TypeError:
         print("TypeError for ", parsed)
         raise
+
+
+import json
+def debug():
+    global unique_pages
+    global visited
+    global longest_page_url
+    global longest_page_length 
+    global common_words
+    global subdomains
+
+    with open('debug/unique_pages.txt', 'w') as file:
+        file.write("unique pages: " + str(unique_pages) + ", visited length: " + str(len(visited)))
+
+    with open('debug/longest_page_url.txt', 'w') as file:
+        file.write(longest_page_url)
+
+    with open('debug/longest_page_length.txt', 'w') as file:
+        file.write(str(longest_page_length))  # Convert number to string
+
+    with open('debug/common_words.json', 'w') as file:
+        file.write(json.dumps(common_words, indent=4))  # Convert dict to formatted string
+
+    with open('debug/subdomains.json', 'w') as file:
+        file.write(json.dumps(subdomains, indent=4))  # Convert dict to formatted string
