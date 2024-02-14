@@ -52,7 +52,7 @@ def extract_next_links(url, resp):
         return []
     
     # Tokenize url by / and if anything repeats more than twice, return []
-    # We don't need to add to visited # http://www.cert.ics.uci.edu/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/EMWS09/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/seminar/Nanda/EMWS09/seminar/Nanda/EMWS09/seminar/Nanda/seminar/Nanda/EMWS09/
+    # We don't need to add to visited
     if is_long_url(url):
         return []
 
@@ -191,7 +191,7 @@ def subdomains_tracker(resp):
     domain = ".ics.uci.edu" # add dot to avoid subdomains like "informatics.uci.edu"
     parsed_url = urlparse(resp.url)
     if parsed_url.hostname.endswith(domain):
-        subdomain = parsed_url.hostname[:-len(domain)-1] # get subdomain
+        subdomain = parsed_url.hostname[:-len(domain)] # get subdomain
         subdomains[subdomain] = subdomains.get(subdomain, 0) + 1 # increment count if subdomain is already in dict or set to 1 if new
  
 
