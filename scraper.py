@@ -36,9 +36,12 @@ def extract_next_links(url, resp):
 
     # FILTERING ==========================================================
 
-    # Handles bad status codes and returns TRUE if not 200
-    # Does nothing if 200
+    # Handles bad status codes and returns TRUE if not an ok status code
     if status_code_bad(resp, url):
+        return []
+    
+    #Assures No Long Pages
+    if (len(str(resp.raw_response.content)) > 400000):
         return []
     
     # Tokenize url by / and if anything repeats more than twice, return []
@@ -50,7 +53,6 @@ def extract_next_links(url, resp):
     if too_similar(resp):
         return []
     
-
     # LINKS STUFF ========================================================
 
     # Get valid / defragmented links
@@ -96,6 +98,7 @@ def status_code_bad(resp, url):
 
 
 def is_long_url(url):
+    # If too many repeated tokens in url, return True
     url_tokens = url.split('/')
     token_freq = {}
     for token in url_tokens:
@@ -136,10 +139,11 @@ def filter_query_params(links):
     
     goodLinks = []
     for link in links:
+        # Get short url without query params/fragments
         tempLink = url_without_query(link)
         if tempLink not in visited:
-            visited.add(tempLink)
-            goodLinks.append(link)
+            visited.add(tempLink) # Add short url to visited
+            goodLinks.append(link) # Visit full link
 
     return goodLinks
 
@@ -162,7 +166,7 @@ def handle_word_stuff(resp):
             if word not in stopWords: #if word is not a stop word and is an english word
                 common_words[word] = common_words.get(word, 0) + 1 #increment count if word is already in dict or set to 1 if new
 
-        # Get page length (in length of words) and compare to longest page, if longer, update longest page count and url (BEATUFIUL SOUP)
+        # Get page length (in length of words) and compare to longest page, if longer, update longest page count and url
         if len(words) > longest_page_length:
             longest_page_length = len(words)
             longest_page_url = resp.url
@@ -172,12 +176,12 @@ def subdomains_tracker(resp):
     global subdomains
 
     # only track ics.uci.edu
-    domain = ".ics.uci.edu"
+    domain = ".ics.uci.edu" # add dot to avoid subdomains like "informatics.uci.edu"
     parsed_url = urlparse(resp.url)
     if parsed_url.hostname.endswith(domain):
-        subdomain = parsed_url.hostname[:-len(domain)-1]
-        subdomains[subdomain] = subdomains.get(subdomain, 0) + 1
-
+        subdomain = parsed_url.hostname[:-len(domain)-1] # get subdomain
+        subdomains[subdomain] = subdomains.get(subdomain, 0) + 1 # increment count if subdomain is already in dict or set to 1 if new
+ 
 
 def is_valid(url):
     try:
@@ -203,6 +207,7 @@ def is_valid(url):
 
 import json
 def debug():
+    # Write important metrics to debug files
     global unique_pages
     global visited
     global longest_page_url
