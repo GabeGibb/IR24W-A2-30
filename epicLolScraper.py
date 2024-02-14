@@ -34,6 +34,9 @@ def extract_next_links(url, resp):
     #Problem with Status Code
     if (resp.status != 200):
         return []
+    #Assures No Long Pages
+    if (len(str(resp.raw_response.content)) > 400000):
+        return []
 
     #Main Scraper
     links = []
@@ -46,7 +49,7 @@ def extract_next_links(url, resp):
         href, _ = urldefrag(href)
         href = urljoin(resp.url, href)
         links.append(href)
-    '''
+    
     #Helps with frequencies
     content = str(resp.raw_response.content)
     tokens = []
@@ -60,7 +63,7 @@ def extract_next_links(url, resp):
                 current_token = ""
     for token in tokens[:]:
         #Filters out English Stopwords and HTML Markup
-        if (token in ["a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are", "aren", "t", "as", "at", "be", "because", "been", "before", "being", "below", "between", "both", "but", "by", "can", "cannot", "could", "couldn", "did", "didn", "do", "does", "doesn", "doing", "don", "down", "during", "each", "few", "for", "from", "further", "had", "hadn", "has", "hasn", "have", "haven", "having", "he", "d", "ll", "s", "her", "here", "hers", "herself", "him", "himself", "his", "how", "i", "m", "ve", "if", "in", "into", "is", "isn", "it", "its", "itself", "let", "me", "more", "most", "mustn", "my", "myself", "no", "nor", "not", "of", "off", "on", "once", "only", "or", "other", "ought", "our", "ours", "ourselves", "out", "over", "own", "same", "shan", "she", "should", "shouldn", "so", "some", "such", "than", "that", "the", "their", "theirs", "them", "themselves", "then", "there", "these", "they", "re", "ve", "this", "those", "through", "to", "too", "under", "until", "up", "very", "was", "wasn", "we", "were", "weren", "what", "when", "where", "which", "while", "who", "whom", "why", "with", "won", "would", "wouldn", "you", "your", "yours", "yourself", "yourselves"]):
+        if (token in ["about", "above", "after", "again", "against", "aren", "because", "been", "before", "being", "below", "between", "cannot", "could", "couldn", "didn", "does", "doesn", "doing", "down", "during", "each", "from", "further", "hadn", "hasn", "have", "haven", "having", "here", "hers", "herself", "himself", "into", "itself", "more", "most", "mustn", "myself", "once", "only", "other", "ought", "ours", "ourselves", "over", "same", "shan", "should", "shouldn", "some", "such", "than", "that", "their", "theirs", "them", "themselves", "then", "there", "these", "they", "this", "those", "through", "under", "until", "very", "wasn", "were", "weren", "what", "when", "where", "which", "while", "whom", "with", "would", "wouldn", "your", "yours", "yourself", "yourselves"]):
             tokens.remove(token)
     for token in tokens[:]:
         if (len(token) < 4):
@@ -89,7 +92,6 @@ def extract_next_links(url, resp):
         if (subdomain not in subdomains):
             subdomains[subdomain] = 0
         subdomains[subdomain] += 1
-    '''
     #Removes Query and Beyond
     for i in range(0, len(links)-1):
         if ("?" in links[i]):
@@ -142,7 +144,7 @@ def extract_next_links(url, resp):
     crawled = crawled + len(links)
     
     #Keeps Track of Counters (Uncomment to Test)
-    '''
+    
     print("Crawled Pages: " + str(crawled))
     print("Unique Pages: " + str(unique_pages))
     
@@ -156,7 +158,7 @@ def extract_next_links(url, resp):
 
     subdomains_list = sorted(subdomains.items(), key=lambda x: x[0])
     print("ICS Subdomains: " + str(subdomains_list))
-    '''
+    
     
     return links
 
