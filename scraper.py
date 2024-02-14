@@ -33,8 +33,15 @@ def extract_next_links(url, resp):
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
     return list()
     '''
-
+    global visited
     # FILTERING ==========================================================
+
+    # If url or resp.url has been visited, return []
+    # Shortened url in order to ensure no duplicates
+    if url_without_query(url) in visited or url_without_query(resp.url) in visited:
+        return []
+    visited.add(url_without_query(url))
+    visited.add(url_without_query(resp.url))
 
     # Handles bad status codes and returns TRUE if not an ok status code
     if status_code_bad(resp, url):
@@ -84,10 +91,7 @@ def status_code_bad(resp, url):
     global visited
     # Do stuff if not 200 status code
     if resp.status != 200: 
-        # TODO: Detect redirects and if the page redirects your crawler, index the redirected content 
-        # WHAT DOES THAT MEAN??
         if resp.status >= 300 and resp.status < 400:
-            # Assuming just act like normal
             return False
         
         # 404 error handling
@@ -98,6 +102,14 @@ def status_code_bad(resp, url):
 
 
 def is_long_url(url):
+    # If too many slashes in url, return True
+    if (url.count("/") > 12):
+        return True
+    
+    # If too many colons in url, return True
+    if (url.count(":") > 1):
+        return True
+
     # If too many repeated tokens in url, return True
     url_tokens = url.split('/')
     token_freq = {}
