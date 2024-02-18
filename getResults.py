@@ -15,3 +15,11 @@ top_50_words.sort(key=lambda x: x[1], reverse=True) #sort by frequency
 
 for word, frequency in top_50_words:
     print(word, frequency)
+
+
+with open('full_run/subdomains.json', 'r') as file:
+    data = json.load(file)
+
+
+for key, value in sorted(data.items()):
+    print(f'http://{key}.ics.uci.edu, {value}')
